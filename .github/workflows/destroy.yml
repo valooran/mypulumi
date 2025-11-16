@@ -1,11 +1,7 @@
-name: Pulumi Destroy OIDC
+name: Pulumi Destroy
 
 on:
   workflow_dispatch:
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   pulumi-destroy:
@@ -24,14 +20,12 @@ jobs:
         working-directory: ./ppinfra
         run: npm install
 
-      - name: Authenticate with Pulumi
-        uses: pulumi/auth-actions@v1
-        with:
-          organization: valooran-org
-          requested-token-type: urn:pulumi:token-type:access_token:organization
-
       - uses: pulumi/actions@v5
         with:
           command: destroy
           stack-name: valooran-org/myworkshop/dev
           work-dir: ./ppinfra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
